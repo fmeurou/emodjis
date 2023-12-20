@@ -1,0 +1,32 @@
+[project]
+name = "emodjis"
+version = "0.1.0"
+description = "Emoticons server using Django"
+authors = [
+    {name = "Frédéric Meurou", email = "frederic@meurou.com"},
+]
+dependencies = [
+    "Django>=4.2",
+    "djangorestframework~=3.14.0",
+    "drf-spectacular>=0.26",
+    "requests~=2.31.0",
+    "python-dotenv>=1.0.0",
+    "django-filter~=23.2",
+    "redis~=5.0.0",
+    "djangorestframework-simplejwt>=5.3",
+    "django-cors-headers~=4.2.0",
+    "psycopg[binary]~=3.1.10",
+    "pillow~=10.1.0",
+]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project.group.dev.dependencies]
+django-extensions = "~=3.2"
+black = "~=23.3"
+isort = "~=5.12.0"
