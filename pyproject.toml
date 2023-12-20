@@ -30,3 +30,17 @@ build-backend = "pdm.backend"
 django-extensions = "~=3.2"
 black = "~=23.3"
 isort = "~=5.12.0"
+
+[tool.pdm.build]
+includes = [
+    "emodjis/",
+    "emodjis/**/*.py",
+    "emodjis/**/*.css",
+    "emodjis/**/*.html",
+    "emodjis/**/*.js"
+]
+excludes = [
+    "tests",
+    "dynamics_apis/test",
+    "dynamics_apis/tests",
+]
