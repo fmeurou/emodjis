@@ -17,6 +17,15 @@ class EmojiUpdateManager(models.Manager):
 
 
 class Emoji(models.Model):
+    EXPORT_FIELDS = [
+        "name",
+        "uses",
+        "created_at",
+        "created_by",
+        "deleted_at",
+        "deleted_by",
+    ]
+
     name = models.CharField(max_length=255, primary_key=True)
     uses = models.IntegerField(default=0)
     image = models.BinaryField(null=True)
@@ -34,3 +43,4 @@ class Emoji(models.Model):
     )
     objects = EmojiManager()
     updates = EmojiUpdateManager()
+    all_objects = models.Manager()
