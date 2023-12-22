@@ -16,8 +16,8 @@ COPY config/asgi.py config/asgi.py
 COPY config/settings.py config/settings.py
 COPY config/urls.py config/urls.py
 COPY config/wsgi.py config/wsgi.py
+COPY docker-entrypoint.sh docker-entrypoint.sh
 RUN pip install emodjis
-RUN python manage.py migrate --noinput
-RUN python manage.py collectstatic --noinput
+RUN chmod +x docker-entrypoint.sh
 EXPOSE 8000
-ENTRYPOINT ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+ENTRYPOINT ["/bin/sh", "docker-entrypoint.sh"]
