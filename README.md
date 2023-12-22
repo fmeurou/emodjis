@@ -1,13 +1,13 @@
 # emodjis
 
 Emojis is a work inspired from [custom-emoji-server](https://github.com/dsmiller95/custom-emoji-server/blob/master/src/emoticons.ts) with the objective of using our Slack emoticons into Teams.
-The backend is only a part of the project and more is going on to use the service in Teams on the frontend side. 
+The backend is only a part of the project and more is going on to use the service in Teams on the frontend side.
 
 ## Dependencies
 
 - [Django](https://www.djangoproject.com/) for fast app development
 - [Django Rest Framework](https://www.django-rest-framework.org) for APIs
-- [DRF Spectacular](https://drf-spectacular.readthedocs.io/en/latest/readme.html) for API documentation 
+- [DRF Spectacular](https://drf-spectacular.readthedocs.io/en/latest/readme.html) for API documentation
 
 ## Install
 
@@ -17,7 +17,7 @@ pip install emodjis
 
 ### settings.py
 
-Add the following values to INSTALLED_APPS  
+Add the following values to INSTALLED_APPS
 
 ```
 [

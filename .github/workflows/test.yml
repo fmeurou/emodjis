@@ -33,5 +33,3 @@ jobs:
           DB_ENGINE: ${{ vars.DB_ENGINE }}
           DB_NAME: ${{ vars.DB_NAME }}
           ALLOWED_HOSTS: ${{ vars.ALLOWED_HOSTS }}
-          
-          

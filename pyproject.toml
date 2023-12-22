@@ -30,6 +30,7 @@ build-backend = "pdm.backend"
 django-extensions = "~=3.2"
 black = "~=23.3"
 isort = "~=5.12.0"
+pre-commit = "~=3.6.0"
 
 [tool.pdm.build]
 includes = [
