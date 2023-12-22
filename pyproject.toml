@@ -6,7 +6,7 @@ authors = [
     {name = "Frédéric Meurou", email = "frederic@meurou.com"},
 ]
 dependencies = [
-    "Django>=4.2",
+    "Django~=4.2",
     "djangorestframework~=3.14.0",
     "drf-spectacular>=0.26",
     "requests~=2.31.0",
