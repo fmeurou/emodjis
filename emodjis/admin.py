@@ -21,7 +21,7 @@ class ExportCsvMixin:
 
         writer.writerow(self.model.EXPORT_FIELDS)
         for obj in queryset:
-            row = writer.writerow(
+            writer.writerow(
                 [getattr(obj, field) for field in self.model.EXPORT_FIELDS]
             )
 
@@ -81,25 +81,27 @@ class EmojiAdmin(admin.ModelAdmin, ExportCsvMixin, ExportZipMixin):
         response = super().changelist_view(request, extra_context)
         try:
             filtered_query_set = response.context_data["cl"].queryset
-        except:
-            print("error")
+        except KeyError:
             return response
         usage = filtered_query_set.values("name", "image", "uses").order_by(
             "-uses", "name"
         )[:10]
-        print(usage)
         extra_context = dict(usage=usage)
         response.context_data.update(extra_context)
         return response
 
-    def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
+    def changeform_view(
+        self, request, object_id=None, form_url="", extra_context=None
+    ):
         if request.GET.get("export_csv", False):
             export_queryset = self.get_queryset(request).filter(pk=object_id)
             return self.export_as_csv(request, export_queryset)
         if request.GET.get("export_zip", False):
             export_queryset = self.get_queryset(request).filter(pk=object_id)
             return self.export_as_csv(request, export_queryset)
-        return super().changeform_view(request, object_id, form_url, extra_context)
+        return super().changeform_view(
+            request, object_id, form_url, extra_context
+        )
 
     def has_add_permission(self, request, obj=None):
         return False

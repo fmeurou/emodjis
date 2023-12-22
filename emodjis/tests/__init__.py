@@ -20,7 +20,9 @@ emoticon_detail_url = "/emoticon/{name}"
 
 class TestEmoticonAPI(TestCase):
     def setUp(self):
-        User.objects.create_user(username=username, email=email, password=password)
+        User.objects.create_user(
+            username=username, email=email, password=password
+        )
         User.objects.create_user(
             username=username + "2", email=email, password=password
         )
@@ -50,8 +52,12 @@ class TestEmoticonAPI(TestCase):
     def test_create_emoticon(self):
         name = "new_emoticon"
         client = APIClient()
-        basic_auth = base64.b64encode(f"{username}:{password}".encode("latin1"))
-        client.credentials(HTTP_AUTHORIZATION="Basic " + basic_auth.decode("utf-8"))
+        basic_auth = base64.b64encode(
+            f"{username}:{password}".encode("latin1")
+        )
+        client.credentials(
+            HTTP_AUTHORIZATION="Basic " + basic_auth.decode("utf-8")
+        )
         response = client.post(
             emoticon_detail_url.format(name=name),
             files={"image": open(test_image, "rb")},
@@ -63,11 +69,15 @@ class TestEmoticonAPI(TestCase):
     def test_create_emoticon_unknown_format(self):
         name = "wrong_format"
         client = APIClient()
-        basic_auth = base64.b64encode(f"{username}:{password}".encode("latin1"))
-        client.credentials(HTTP_AUTHORIZATION="Basic " + basic_auth.decode("utf-8"))
+        basic_auth = base64.b64encode(
+            f"{username}:{password}".encode("latin1")
+        )
+        client.credentials(
+            HTTP_AUTHORIZATION="Basic " + basic_auth.decode("utf-8")
+        )
         response = client.post(
             emoticon_detail_url.format(name=name),
-            {"image": open(test_wrong_image, "rb")}
+            {"image": open(test_wrong_image, "rb")},
         )
         assert response.status_code == 400
 
@@ -84,8 +94,12 @@ class TestEmoticonAPI(TestCase):
         name = "to_delete"
         self.create_test_image(name=name)
         client = APIClient()
-        basic_auth = base64.b64encode(f"{username}:{password}".encode("latin1"))
-        client.credentials(HTTP_AUTHORIZATION="Basic " + basic_auth.decode("utf-8"))
+        basic_auth = base64.b64encode(
+            f"{username}:{password}".encode("latin1")
+        )
+        client.credentials(
+            HTTP_AUTHORIZATION="Basic " + basic_auth.decode("utf-8")
+        )
         response = client.delete(emoticon_detail_url.format(name=name))
         assert response.status_code == 204
 
@@ -100,8 +114,12 @@ class TestEmoticonAPI(TestCase):
         name = "to_delete"
         self.create_test_image(name=name)
         client = APIClient()
-        basic_auth = base64.b64encode(f"{username+'2'}:{password}".encode("latin1"))
-        client.credentials(HTTP_AUTHORIZATION="Basic " + basic_auth.decode("utf-8"))
+        basic_auth = base64.b64encode(
+            f"{username+'2'}:{password}".encode("latin1")
+        )
+        client.credentials(
+            HTTP_AUTHORIZATION="Basic " + basic_auth.decode("utf-8")
+        )
         response = client.delete(emoticon_detail_url.format(name=name))
         assert response.status_code == 404
 
@@ -113,7 +131,7 @@ class TestEmoticonAPI(TestCase):
         assert response.json() is not None
 
     def test_retrieve_schema(self):
-        url = f"/schema/?format=json"
+        url = "/schema/?format=json"
         client = APIClient()
         response = client.get(url)
         assert response.status_code == 200

@@ -88,10 +88,19 @@ class EmojiViewSet(viewsets.ModelViewSet):
     @extend_schema(
         summary=_("Create a new emoticon"),
         description=_(
-            """Create a new icon with or without icon. Upload can happen later, but only icons with content will be visible."""
+            """
+            Create a new icon with or without icon.
+
+            Upload can happen later,
+            but only icons with content will be visible.
+            """
         ),
         request=EmojiCreateSerializer,
-        responses={201: EmojiSerializer, 400: OpenApiTypes.OBJECT, 500: OpenApiTypes.OBJECT},
+        responses={
+            201: EmojiSerializer,
+            400: OpenApiTypes.OBJECT,
+            500: OpenApiTypes.OBJECT,
+        },
         tags=[
             "emoticons",
         ],
@@ -107,7 +116,9 @@ class EmojiViewSet(viewsets.ModelViewSet):
         create_serializer = self.get_serializer_class()(data=request.data)
         if not create_serializer.is_valid():
             return Response(
-                create_serializer.errors, status=400, content_type="application/json"
+                create_serializer.errors,
+                status=400,
+                content_type="application/json",
             )
         if request.FILES.get("image"):
             try:
@@ -124,15 +135,21 @@ class EmojiViewSet(viewsets.ModelViewSet):
                 logger = logging.getLogger("django")
                 logger.error("I/O error.")
                 return Response(
-                    {"detail": _("I/O error.")}, status=500, content_type="application/json"
+                    {"detail": _("I/O error.")},
+                    status=500,
+                    content_type="application/json",
                 )
             emoticon = create_serializer.save(
                 name=name, created_by=request.user, image=content
             )
         else:
-            emoticon = create_serializer.save(name=name, created_by=request.user)
+            emoticon = create_serializer.save(
+                name=name, created_by=request.user
+            )
         serializer = EmojiSerializer(emoticon)
-        return Response(serializer.data, status=201, content_type="application/json")
+        return Response(
+            serializer.data, status=201, content_type="application/json"
+        )
 
     @extend_schema(
         summary=_("Delete an emoticon"),

@@ -1,5 +1,4 @@
 "Emoji model"
-import uuid
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -7,7 +6,9 @@ from django.contrib.auth.models import User
 class EmojiManager(models.Manager):
     def get_queryset(self):
         return (
-            super().get_queryset().filter(deleted_at__isnull=True, image__isnull=False)
+            super()
+            .get_queryset()
+            .filter(deleted_at__isnull=True, image__isnull=False)
         )
 
 

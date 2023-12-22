@@ -16,15 +16,25 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
+from drf_spectacular.views import (
+    SpectacularAPIView,
+    SpectacularSwaggerView,
+    SpectacularRedocView,
+)
 
 from emodjis import urls as emojis_urls
 
 urlpatterns = [
-    path('config/', admin.site.urls),
-    path('schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path("config/", admin.site.urls),
+    path("schema/", SpectacularAPIView.as_view(), name="schema"),
+    path(
+        "swagger/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
+    ),
     # Optional UI:
-    path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
-    path('', include(emojis_urls)),
+    path(
+        "redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"
+    ),
+    path("", include(emojis_urls)),
 ]
