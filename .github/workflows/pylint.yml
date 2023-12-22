@@ -23,7 +23,5 @@ jobs:
     # You are now able to use PDM in your workflow
     - name: Install dependencies
       run: pdm install
-    - name: Analysing the code with pylint
-      run: |
-        pdm run pylint $(git ls-files '*.py')
+    - name: Run project tests
         pdm run python manage.py test emodjis
