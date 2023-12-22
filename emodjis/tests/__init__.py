@@ -36,16 +36,16 @@ class TestEmoticonAPI(TestCase):
         name = test_name
         client = APIClient()
         response = client.get(emoticon_detail_url.format(name=name))
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(response.headers["Content-Type"], "image/gif")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers["Content-Type"], "image/gif")
         self.assertIsNotNone(response.content)
 
     def test_unknown_emoticon(self):
         name = test_name + "_unknown"
         client = APIClient()
         response = client.get(emoticon_detail_url.format(name=name))
-        self.assertEquals(response.status_code, 404)
-        self.assertEquals(response.headers["Content-Type"], "application/json")
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.headers["Content-Type"], "application/json")
 
     def test_create_emoticon(self):
         name = "new_emoticon"
@@ -67,11 +67,9 @@ class TestEmoticonAPI(TestCase):
         client.credentials(HTTP_AUTHORIZATION="Basic " + basic_auth.decode("utf-8"))
         response = client.post(
             emoticon_detail_url.format(name=name),
-            files={"image": open(test_wrong_image, "rb")},
+            {"image": open(test_wrong_image, "rb")}
         )
-        assert response.status_code == 201
-        assert response.headers["Content-Type"] == "application/json"
-        assert response.json() is not None
+        assert response.status_code == 400
 
     def test_create_emoticon_unauthenticated(self):
         name = "new_emoticon"
