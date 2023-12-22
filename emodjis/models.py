@@ -1,5 +1,4 @@
 "Emoji model"
-import uuid
 from django.db import models
 from django.contrib.auth.models import User, Group
 
@@ -25,7 +24,9 @@ class EmojiAdminManager(models.Manager):
 class EmojiManager(EmojiAdminManager):
     def get_queryset(self):
         return (
-            super().get_queryset().filter(deleted_at__isnull=True, image__isnull=False)
+            super()
+            .get_queryset()
+            .filter(deleted_at__isnull=True, image__isnull=False)
         )
 
 
@@ -51,7 +52,11 @@ class Emoji(models.Model):
     uses = models.IntegerField(default=0)
     image = models.BinaryField(null=True)
     team = models.ForeignKey(
-        Group, related_name="emojis", on_delete=models.CASCADE, null=True, blank=True
+        Group,
+        related_name="emojis",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     nsfw = models.BooleanField(default=False)
     private = models.BooleanField(default=False)

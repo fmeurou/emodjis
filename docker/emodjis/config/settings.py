@@ -107,16 +107,20 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation."
+        "UserAttributeSimilarityValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": "django.contrib.auth.password_validation."
+        "MinimumLengthValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation."
+        "CommonPasswordValidator",
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": "django.contrib.auth.password_validation."
+        "NumericPasswordValidator",
     },
 ]
 
@@ -150,8 +154,13 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.BasicAuthentication",
     ),
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
-    "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
+    "DEFAULT_FILTER_BACKENDS": [
+        "django_filters.rest_framework.DjangoFilterBackend"
+    ],
 }
+
+SERVER_NAME = os.environ.get("SERVER_NAME", "Emodjis Service")
+SERVER_URL = os.environ.get("SERVER_URL", "localhost")
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Emodjis APIs",
@@ -169,8 +178,8 @@ SPECTACULAR_SETTINGS = {
     "DEEP_LINKING": True,
     "SERVERS": [
         {
-            "url": f"{os.environ.get('SERVER_URL', 'localhost')}",
-            "description": f"{os.environ.get('SERVER_NAME', 'Emodjis Service')}",
+            "url": f"{SERVER_URL}",
+            "description": f"{SERVER_NAME}",
         }
     ],
 }

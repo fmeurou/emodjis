@@ -1,6 +1,7 @@
 """Emoticons viewsets"""
 import uuid
-from PIL import Image
+import logging
+from PIL import Image, UnidentifiedImageError
 from django.http import HttpResponse
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
@@ -33,7 +34,9 @@ class EmojiViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = Emoji.objects.sfw(user=self.request.user)
-        if self.action in ["list", "retrieve"] and self.request.GET.get("nsfw", False):
+        if self.action in ["list", "retrieve"] and self.request.GET.get(
+            "nsfw", False
+        ):
             qs = Emoji.objects.nsfw(user=self.request.user)
         if self.action in ["create", "update", "partial_update", "destroy"]:
             qs = Emoji.updates.filter(created_by=self.request.user)
@@ -56,7 +59,9 @@ class EmojiViewSet(viewsets.ModelViewSet):
             content = Image.open(f"/tmp/{tmp_file_name}")
             width_ratio = BASE_WIDTH / float(content.size[0])
             hsize = int((float(content.size[1]) * float(width_ratio)))
-            content = content.resize((BASE_WIDTH, hsize), Image.Resampling.LANCZOS)
+            content = content.resize(
+                (BASE_WIDTH, hsize), Image.Resampling.LANCZOS
+            )
             content.save(f"/tmp/{gif_file_name}", format="GIF")
             content.close()
             with open(f"/tmp/{gif_file_name}", "rb") as f:
@@ -102,12 +107,18 @@ class EmojiViewSet(viewsets.ModelViewSet):
         summary=_("Create a new emoticon"),
         description=_(
             """
-            Create a new icon with or without icon. Upload can happen later, 
+            Create a new icon with or without icon.
+
+            Upload can happen later,
             but only icons with content will be visible.
             """
         ),
         request=EmojiCreateSerializer,
-        responses={201: EmojiSerializer, 400: OpenApiTypes.OBJECT},
+        responses={
+            201: EmojiSerializer,
+            400: OpenApiTypes.OBJECT,
+            500: OpenApiTypes.OBJECT,
+        },
         tags=[
             "emoticons",
         ],
@@ -123,17 +134,40 @@ class EmojiViewSet(viewsets.ModelViewSet):
         create_serializer = self.get_serializer_class()(data=request.data)
         if not create_serializer.is_valid():
             return Response(
-                create_serializer.errors, status=400, content_type="application/json"
+                create_serializer.errors,
+                status=400,
+                content_type="application/json",
             )
         if uploaded_file := request.FILES.get("image"):
-            content = self.handle_file_upload(uploaded_file=uploaded_file)
+            try:
+                content = self.handle_file_upload(uploaded_file=uploaded_file)
+            except UnidentifiedImageError:
+                logger = logging.getLogger("django")
+                logger.error("Uploaded file is not an image.")
+                return Response(
+                    {"detail": _("Uploaded file is not an image.")},
+                    status=400,
+                    content_type="application/json",
+                )
+            except IOError:
+                logger = logging.getLogger("django")
+                logger.error("I/O error.")
+                return Response(
+                    {"detail": _("I/O error.")},
+                    status=500,
+                    content_type="application/json",
+                )
             emoticon = create_serializer.save(
                 name=name, created_by=request.user, image=content
             )
         else:
-            emoticon = create_serializer.save(name=name, created_by=request.user)
+            emoticon = create_serializer.save(
+                name=name, created_by=request.user
+            )
         serializer = EmojiSerializer(emoticon)
-        return Response(serializer.data, status=201, content_type="application/json")
+        return Response(
+            serializer.data, status=201, content_type="application/json"
+        )
 
     @extend_schema(
         summary=_("Delete an emoticon"),
