@@ -1,4 +1,4 @@
-name: Pylint
+name: Test code
 
 on: [push]
 
@@ -24,4 +24,4 @@ jobs:
     - name: Install dependencies
       run: pdm install
     - name: Run project tests
-        pdm run python manage.py test emodjis
+      run: pdm run python manage.py test emodjis
