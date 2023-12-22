@@ -18,7 +18,9 @@ class Migration(migrations.Migration):
             fields=[
                 (
                     "name",
-                    models.CharField(max_length=255, primary_key=True, serialize=False),
+                    models.CharField(
+                        max_length=255, primary_key=True, serialize=False
+                    ),
                 ),
                 ("uses", models.IntegerField(default=0)),
                 ("image", models.BinaryField(null=True)),

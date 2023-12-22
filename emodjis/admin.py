@@ -21,7 +21,7 @@ class ExportCsvMixin:
 
         writer.writerow(self.model.EXPORT_FIELDS)
         for obj in queryset:
-            row = writer.writerow(
+            writer.writerow(
                 [getattr(obj, field) for field in self.model.EXPORT_FIELDS]
             )
 
@@ -55,13 +55,28 @@ class EmojiAdmin(admin.ModelAdmin, ExportCsvMixin, ExportZipMixin):
     list_per_page = 20
     list_display = (
         "name",
+        "team",
+        "private",
+        "nsfw",
         "uses",
         "created_at",
         "created_by",
         "deleted_at",
         "deleted_by",
     )
-    list_filter = ("name", "uses")
+
+    fields = (
+        "name",
+        "team",
+        "nsfw",
+        "private",
+        "uses",
+        "created_by",
+        "created_at",
+        "deleted_at",
+        "deleted_by",
+    )
+    list_filter = ("name", "uses", "nsfw", "private")
     search_fields = ("name",)
     readonly_fields = (
         "created_at",
@@ -75,36 +90,45 @@ class EmojiAdmin(admin.ModelAdmin, ExportCsvMixin, ExportZipMixin):
     change_list_template = "charts_change_list.html"
 
     def get_queryset(self, request):
-        return Emoji.all_objects.all()
+        if request.user.is_superuser:
+            return Emoji.admin.all()
+        else:
+            return Emoji.updates.nsfw(user=request.user)
 
     def changelist_view(self, request, extra_context=None):
         response = super().changelist_view(request, extra_context)
         try:
             filtered_query_set = response.context_data["cl"].queryset
-        except:
-            print("error")
+        except KeyError:
             return response
         usage = filtered_query_set.values("name", "image", "uses").order_by(
             "-uses", "name"
         )[:10]
-        print(usage)
         extra_context = dict(usage=usage)
         response.context_data.update(extra_context)
         return response
 
-    def changeform_view(self, request, object_id=None, form_url="", extra_context=None):
+    def changeform_view(
+        self, request, object_id=None, form_url="", extra_context=None
+    ):
         if request.GET.get("export_csv", False):
             export_queryset = self.get_queryset(request).filter(pk=object_id)
             return self.export_as_csv(request, export_queryset)
         if request.GET.get("export_zip", False):
             export_queryset = self.get_queryset(request).filter(pk=object_id)
             return self.export_as_csv(request, export_queryset)
-        return super().changeform_view(request, object_id, form_url, extra_context)
+        return super().changeform_view(
+            request, object_id, form_url, extra_context
+        )
 
     def has_add_permission(self, request, obj=None):
         return False
 
     def has_change_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        if obj:
+            return request.user == obj.created_by or request.user.is_superuser
         return False
 
 
