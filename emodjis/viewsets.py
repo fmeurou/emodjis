@@ -4,6 +4,7 @@ from PIL import Image
 from django.http import HttpResponse
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
+from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from drf_spectacular.openapi import OpenApiTypes
 from rest_framework import viewsets
@@ -17,25 +18,35 @@ from .serializers import (
     EmojiCreateSerializer,
 )
 from .permissions import IsOwnerOrReadOnly
+from .filters import EmojiFilter
+
+BASE_WIDTH = 130
 
 
 class EmojiViewSet(viewsets.ModelViewSet):
+    """Emoji viewset."""
+
     lookup_field = "name"
     parser_classes = (MultiPartParser, FormParser)
-    """Emoji viewset"""
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = EmojiFilter
 
     def get_queryset(self):
-        if self.action in ["list", "retrieve"]:
-            return Emoji.objects.all()
+        qs = Emoji.objects.sfw(user=self.request.user)
+        if self.action in ["list", "retrieve"] and self.request.GET.get("nsfw", False):
+            qs = Emoji.objects.nsfw(user=self.request.user)
         if self.action in ["create", "update", "partial_update", "destroy"]:
-            return Emoji.updates.filter(created_by=self.request.user)
+            qs = Emoji.updates.filter(created_by=self.request.user)
+        qs = self.filter_queryset(qs)
+        return qs
 
     queryset = Emoji.objects.all()
     serializer_class = EmojiSerializer
     permission_classes = (IsOwnerOrReadOnly,)
 
-    def handle_file_upload(self, request) -> bytes:
-        upload = request.FILES.get("image")
+    @staticmethod
+    def handle_file_upload(uploaded_file) -> bytes:
+        upload = uploaded_file
         if upload:
             tmp_file_name = str(uuid.uuid4())
             gif_file_name = tmp_file_name + ".gif"
@@ -43,11 +54,14 @@ class EmojiViewSet(viewsets.ModelViewSet):
                 for chunk in upload.chunks():
                     tmp_file.write(chunk)
             content = Image.open(f"/tmp/{tmp_file_name}")
+            width_ratio = BASE_WIDTH / float(content.size[0])
+            hsize = int((float(content.size[1]) * float(width_ratio)))
+            content = content.resize((BASE_WIDTH, hsize), Image.Resampling.LANCZOS)
             content.save(f"/tmp/{gif_file_name}", format="GIF")
             content.close()
-        with open(f"/tmp/{gif_file_name}", "rb") as f:
-            content = f.read()
-        return content
+            with open(f"/tmp/{gif_file_name}", "rb") as f:
+                content = f.read()
+            return content
 
     def get_serializer_class(self):
         match self.action:
@@ -65,7 +79,7 @@ class EmojiViewSet(viewsets.ModelViewSet):
     @extend_schema(
         summary=_("Retrieve emoticon"),
         description=_("""Retrieve visible emoticon image by name."""),
-        responses={200: OpenApiTypes.BINARY, 400: OpenApiTypes.OBJECT},
+        responses={200: OpenApiTypes.BINARY, 404: OpenApiTypes.OBJECT},
         tags=[
             "emoticons",
         ],
@@ -87,7 +101,10 @@ class EmojiViewSet(viewsets.ModelViewSet):
     @extend_schema(
         summary=_("Create a new emoticon"),
         description=_(
-            """Create a new icon with or without icon. Upload can happen later, but only icons with content will be visible."""
+            """
+            Create a new icon with or without icon. Upload can happen later, 
+            but only icons with content will be visible.
+            """
         ),
         request=EmojiCreateSerializer,
         responses={201: EmojiSerializer, 400: OpenApiTypes.OBJECT},
@@ -108,15 +125,15 @@ class EmojiViewSet(viewsets.ModelViewSet):
             return Response(
                 create_serializer.errors, status=400, content_type="application/json"
             )
-        if request.FILES.get("image"):
-            content = self.handle_file_upload(request)
+        if uploaded_file := request.FILES.get("image"):
+            content = self.handle_file_upload(uploaded_file=uploaded_file)
             emoticon = create_serializer.save(
                 name=name, created_by=request.user, image=content
             )
         else:
             emoticon = create_serializer.save(name=name, created_by=request.user)
         serializer = EmojiSerializer(emoticon)
-        return Response(serializer.data, content_type="application/json")
+        return Response(serializer.data, status=201, content_type="application/json")
 
     @extend_schema(
         summary=_("Delete an emoticon"),
