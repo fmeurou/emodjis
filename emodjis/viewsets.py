@@ -34,9 +34,10 @@ class EmojiViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         qs = Emoji.objects.sfw(user=self.request.user)
-        if self.action in ["list", "retrieve"] and self.request.GET.get(
-            "nsfw", False
-        ):
+        if self.action in [
+            "list",
+            "retrieve",
+        ] and self.request.query_params.get("nsfw", False):
             qs = Emoji.objects.nsfw(user=self.request.user)
         if self.action in ["create", "update", "partial_update", "destroy"]:
             qs = Emoji.updates.filter(created_by=self.request.user)
