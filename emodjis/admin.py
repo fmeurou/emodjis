@@ -55,13 +55,28 @@ class EmojiAdmin(admin.ModelAdmin, ExportCsvMixin, ExportZipMixin):
     list_per_page = 20
     list_display = (
         "name",
+        "team",
+        "private",
+        "nsfw",
         "uses",
         "created_at",
         "created_by",
         "deleted_at",
         "deleted_by",
     )
-    list_filter = ("name", "uses")
+
+    fields = (
+        "name",
+        "team",
+        "nsfw",
+        "private",
+        "uses",
+        "created_by",
+        "created_at",
+        "deleted_at",
+        "deleted_by",
+    )
+    list_filter = ("name", "uses", "nsfw", "private")
     search_fields = ("name",)
     readonly_fields = (
         "created_at",
@@ -75,7 +90,10 @@ class EmojiAdmin(admin.ModelAdmin, ExportCsvMixin, ExportZipMixin):
     change_list_template = "charts_change_list.html"
 
     def get_queryset(self, request):
-        return Emoji.all_objects.all()
+        if request.user.is_superuser:
+            return Emoji.admin.all()
+        else:
+            return Emoji.updates.nsfw(user=request.user)
 
     def changelist_view(self, request, extra_context=None):
         response = super().changelist_view(request, extra_context)
@@ -107,6 +125,10 @@ class EmojiAdmin(admin.ModelAdmin, ExportCsvMixin, ExportZipMixin):
         return False
 
     def has_change_permission(self, request, obj=None):
+        if request.user.is_superuser:
+            return True
+        if obj:
+            return request.user == obj.created_by or request.user.is_superuser
         return False
 
 

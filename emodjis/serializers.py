@@ -5,6 +5,23 @@ from .models import Emoji
 from rest_framework import serializers
 
 
+class EmojiFilterSerializer(serializers.ModelSerializer):
+    name = serializers.CharField(label=_("Search by name"), required=False)
+    team = serializers.CharField(
+        label=_("Search by team name"), required=False
+    )
+    nsfw = serializers.BooleanField(
+        label=_("Show NSFW emoticons"), required=False
+    )
+    private = serializers.BooleanField(
+        label=_("Show private emoticons only"), required=False
+    )
+
+    class Meta:
+        model = Emoji
+        fields = ["name", "team", "nsfw", "private"]
+
+
 class EmojiSerializer(serializers.ModelSerializer):
     class Meta:
         model = Emoji
@@ -28,4 +45,4 @@ class EmojiCreateSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Emoji
-        fields = ["image"]
+        fields = ["image", "private", "nsfw", "team"]
