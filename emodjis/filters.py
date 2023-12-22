@@ -4,6 +4,11 @@ from .models import Emoji
 
 
 class EmojiFilter(FilterSet):
+    name = django_filters.CharFilter(
+        field_name="name",
+        lookup_expr="icontains",
+        label="Search by emoticon name",
+    )
     team = django_filters.CharFilter(
         field_name="team__name",
         lookup_expr="icontains",
@@ -17,4 +22,4 @@ class EmojiFilter(FilterSet):
 
     class Meta:
         model = Emoji
-        fields = ["nsfw", "team", "private", "creator"]
+        fields = ["name", "nsfw", "team", "private", "creator"]

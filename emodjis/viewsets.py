@@ -17,6 +17,7 @@ from .serializers import (
     EmojiListSerializer,
     EmojiDestroySerializer,
     EmojiCreateSerializer,
+    EmojiFilterSerializer,
 )
 from .permissions import IsOwnerOrReadOnly
 from .filters import EmojiFilter
@@ -81,6 +82,19 @@ class EmojiViewSet(viewsets.ModelViewSet):
                 return EmojiDestroySerializer
 
         return super().get_serializer_class()
+
+    @extend_schema(
+        summary=_("List emoticons"),
+        description=_("""Filter emoticons."""),
+        responses={200: OpenApiTypes.BINARY, 404: OpenApiTypes.OBJECT},
+        parameters=[EmojiFilterSerializer],
+        tags=[
+            "emoticons",
+        ],
+        methods=["GET"],
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
     @extend_schema(
         summary=_("Retrieve emoticon"),
