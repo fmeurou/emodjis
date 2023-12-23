@@ -37,4 +37,5 @@ urlpatterns = [
         "redoc/", SpectacularRedocView.as_view(url_name="schema"), name="redoc"
     ),
     path("", include(emojis_urls)),
+    path("unicorn/", include("django_unicorn.urls")),
 ]

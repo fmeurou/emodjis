@@ -1,0 +1,20 @@
+{% extends 'bootstrap.html' %}
+{% load django_bootstrap5 %}
+{% load unicorn %}
+{% block bootstrap5_extra_head %}{% unicorn_scripts %}{% endblock %}
+
+{% block bootstrap5_content %}
+    {% csrf_token %}
+    <div class="container">
+        <h1>{% block title %}(no title){% endblock %}</h1>
+
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a class="nav-link" href="{% url 'emojis:index' %}">home</a></li>
+        </ul>
+
+        {% autoescape off %}{% bootstrap_messages %}{% endautoescape %}
+
+        {% block content %}(no content){% endblock %}
+    </div>
+
+{% endblock %}

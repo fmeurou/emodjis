@@ -1,0 +1,3 @@
+<div>
+    {% for p in page_range %}<a href="#" unicorn:click="page={{ p }}" unicorn:model="page">{% if p == page %}<b>{{ p }}</b>{% else %}{{ p }}{% endif %}</a> {% endfor %}
+</div>

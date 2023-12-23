@@ -1,5 +1,5 @@
 """Emoticons serializer."""
-
+import base64
 from django.utils.translation import gettext_lazy as _
 from .models import Emoji
 from rest_framework import serializers
@@ -23,9 +23,14 @@ class EmojiFilterSerializer(serializers.ModelSerializer):
 
 
 class EmojiSerializer(serializers.ModelSerializer):
+    b64image = serializers.SerializerMethodField()
+
     class Meta:
         model = Emoji
         fields = "__all__"
+
+    def get_b64image(self, obj):
+        return base64.b64encode(obj.image).decode("utf-8")
 
 
 class EmojiListSerializer(serializers.ModelSerializer):

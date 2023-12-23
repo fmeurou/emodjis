@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load django_bootstrap5 %}
+{% load unicorn %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    {% csrf_token %}
+    {% unicorn 'emoji-grid' id='emoji-grid' key='emoji-grid' %}
+{% endblock %}

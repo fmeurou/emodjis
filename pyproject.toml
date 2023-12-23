@@ -17,6 +17,8 @@ dependencies = [
     "django-cors-headers~=4.2.0",
     "psycopg[binary]~=3.1.10",
     "pillow~=10.1.0",
+    "django-bootstrap5~=23.0",
+    "django-unicorn~=0.57"
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -31,6 +33,7 @@ django-extensions = "~=3.2"
 black = "~=23.3"
 isort = "~=5.12.0"
 pre-commit = "~=3.6.0"
+django-debug-toolbar = "~=4.2.0"
 
 [tool.pdm.build]
 includes = [
@@ -44,4 +47,9 @@ excludes = [
     "tests",
     "dynamics_apis/test",
     "dynamics_apis/tests",
+]
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "django-extensions>=3.2.3",
 ]

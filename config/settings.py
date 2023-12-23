@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
+import random
+import string
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -24,11 +26,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-def generate_key():
-    return os.urandom(24)
+def generate_secret(nb: int = 128):
+    """Generate random secret for the application."""
+    return "".join([random.choice(string.printable) for _ in range(nb)])
 
 
-SECRET_KEY = os.environ.get("SECRET_KEY", generate_key())
+SECRET_KEY = os.environ.get("SECRET_KEY", generate_secret())
 
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = os.environ.get("CORS_ALLOWED_ORIGINS", "").split(",")
@@ -53,8 +56,17 @@ INSTALLED_APPS = [
     "django_filters",
     "drf_spectacular",
     "corsheaders",
+    "django_bootstrap5",
+    "django_unicorn",
     "emodjis",
 ]
+
+if DEBUG:
+    try:
+        INSTALLED_APPS.append("django_extensions")
+        INSTALLED_APPS.append("debug_toolbar")
+    except ImportError:
+        print("Debug toolbar not installed")
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -65,6 +77,9 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+if DEBUG:
+    MIDDLEWARE.append("debug_toolbar.middleware.DebugToolbarMiddleware")
 
 ROOT_URLCONF = "config.urls"
 
@@ -160,6 +175,7 @@ REST_FRAMEWORK = {
 }
 
 SERVER_NAME = os.environ.get("SERVER_NAME", "Emodjis Service")
+SERVER_URL = os.environ.get("SERVER_URL", "localhost")
 
 SPECTACULAR_SETTINGS = {
     "TITLE": "Emodjis APIs",
@@ -177,7 +193,7 @@ SPECTACULAR_SETTINGS = {
     "DEEP_LINKING": True,
     "SERVERS": [
         {
-            "url": f"{os.environ.get('SERVER_URL', 'localhost')}",
+            "url": f"{SERVER_URL}",
             "description": f"{SERVER_NAME}",
         }
     ],
