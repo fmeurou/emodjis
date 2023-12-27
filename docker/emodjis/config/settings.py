@@ -39,6 +39,12 @@ CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DEBUG", "False") == "True"
+if DEBUG:
+    print("Debug mode enabled")
+    RENDER_PARELS = True
+    INTERNAL_IPS = os.environ.get("INTERNAL_IPS", "127.0.0.1,").split(",")
+    DEBUG_TOOLBAR_CONFIG = {"ROOT_TAG_EXTRA_ATTRS": "data-turbo-permanent"}
+
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "127.0.0.1,").split(",")
 

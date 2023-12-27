@@ -1,7 +1,7 @@
 {% load unicorn %}
 <div>
     {%  unicorn 'search' id='search' key='search'%}
-    {%  unicorn 'pagination' id='top_pagination' key='top_pagination' %}
+    <div >{%  unicorn 'pagination' id='top_pagination' key='top_pagination' %}</div>
     <div name="grid" id="emojis_grid">
         {% for emoji in emodjis %}
             <div class="card d-inline-block" style="width: 2rem;" id="img_{{ emoji.name }}">
@@ -10,4 +10,5 @@
             </div>
         {% endfor %}
     </div>
+    <div >{%  unicorn 'pagination' id='bottom_pagination' key='bottom_pagination' %}</div>
 </div>
