@@ -1,6 +1,6 @@
 [project]
 name = "emodjis"
-version = "0.4.1"
+version = "0.4.2"
 description = "Emoticons server using Django"
 authors = [
     {name = "Frédéric Meurou", email = "frederic@meurou.com"},
@@ -24,6 +24,8 @@ dependencies = [
 requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "MIT"}
+Repository = "https://github.com/fmeurou/emodjis"
+Issues = "https://github.com/me/fmeurou/emodjisissues"
 
 [build-system]
 requires = ["pdm-backend"]
