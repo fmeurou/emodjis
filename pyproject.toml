@@ -1,6 +1,6 @@
 [project]
 name = "emodjis"
-version = "0.4.2"
+dynamic = ["version"]
 description = "Emoticons server using Django"
 authors = [
     {name = "Frédéric Meurou", email = "frederic@meurou.com"},
@@ -26,10 +26,26 @@ readme = "README.md"
 license = {text = "MIT"}
 Repository = "https://github.com/fmeurou/emodjis"
 Issues = "https://github.com/me/fmeurou/emodjisissues"
+classifier = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+]
 
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
+
+[tool.pdm]
+version = {source = "file", path = "emodjis/__version__.py"}
 
 [tool.pdm.build]
 includes = [
@@ -52,19 +68,4 @@ dev = [
     "isort~=5.12.0",
     "pre-commit~=3.6.0",
     "django-debug-toolbar~=4.2.0",
-
-]
-
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Framework :: Django",
-    "Framework :: Django :: 4.2",
-    "Framework :: Django :: 5.0",
-    "Development Status :: 4 - Beta",
-    "Intended Audience :: Developers",
 ]
