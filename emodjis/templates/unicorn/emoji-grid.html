@@ -1,6 +1,8 @@
+{%load i18n  %}
 {% load unicorn %}
 <div>
-    <div class="flex place-content-center">{%  unicorn 'search' id='search' key='search'%}</div>
+    <div class="flex place-content-right">{% unicorn 'login' id='login' key='login' %}</div>
+    <div class="flex place-content-center">{% unicorn 'search' id='search' key='search' %}</div>
 
     <div name="grid" id="emojis_grid" class="container m2 p-2">
         {% for emoji in emodjis %}

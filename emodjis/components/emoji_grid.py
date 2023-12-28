@@ -16,14 +16,21 @@ class EmojiGridView(UnicornView):
     def mount(self):
         self.load_emojis()
 
-    def load_emojis(self, search="", page=1):
+    def load_emojis(self, search="", page=1, nsfw=False, private=False):
         self.name_search = search
-        if search:
-            emodjis = Emoji.objects.filter(name__icontains=search).order_by(
-                "name"
-            )
+        if not self.request.user.is_authenticated:
+            emodjis = Emoji.objects.filter(nsfw=False)
         else:
-            emodjis = Emoji.objects.filter(
+            if nsfw:
+                emodjis = Emoji.objects.nsfw(user=self.request.user)
+            else:
+                emodjis = Emoji.objects.sfw(user=self.request.user)
+        if not private:
+            emodjis = emodjis.filter(private=False)
+        if search:
+            emodjis = emodjis.filter(name__icontains=search).order_by("name")
+        else:
+            emodjis = emodjis.filter(
                 name__icontains=self.name_search
             ).order_by("name")
         p = Paginator(emodjis, PAGE_SIZE)
