@@ -1,0 +1,16 @@
+{% load i18n %}
+<div class="grid grid-cols-6 ">
+    {% translate "authenticate" as authentication_string%}
+    {% if authenticated %}
+        <div class="col-start-5">
+        <button type="button" unicorn:click="disconnect">Disconnect {{ user.last_name }}</button></div>
+    {% else %}
+        <div class="col-start-4">
+            <input type="text" unicorn:model="username"/></div>
+        <div class="col-start-5">
+            <input type="password" unicorn:model="password"/></div>
+        <div class="col-start-6">
+        <button type="button" unicorn:click="connect">{{ authentication_string }}</button>
+        </div>
+    {% endif %}
+</div>

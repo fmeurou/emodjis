@@ -1,3 +1,10 @@
+{%  load i18n %}
 <div class="w-100">
-    <input unicorn:model="search" type="text" placeholder="search" class="w-100"/><br/>
+    <input unicorn:model="search" type="text" placeholder="search" class="w-80"/>
+    {% if request.user.is_authenticated %}
+        <input unicorn:model="nsfw" type="checkbox" placeholder="NSFW" id="nsfw"/>
+        <label for="nsfw">{% translate "Include  NSFW icons" %}</label>
+        <input unicorn:model="private" type="checkbox" placeholder="private" id="private"/>
+        <label for="private">{% translate "Include private icons" %}</label>
+    {% endif %}
 </div>
