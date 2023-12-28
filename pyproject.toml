@@ -18,7 +18,8 @@ dependencies = [
     "psycopg[binary]~=3.1.10",
     "pillow~=10.1.0",
     "django-bootstrap5~=23.0",
-    "django-unicorn~=0.58"
+    "django-unicorn~=0.58",
+    "django-tailwind~=3.8.0"
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -27,13 +28,6 @@ license = {text = "MIT"}
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
-
-[project.group.dev.dependencies]
-django-extensions = "~=3.2"
-black = "~=23.3"
-isort = "~=5.12.0"
-pre-commit = "~=3.6.0"
-django-debug-toolbar = "~=4.2.0"
 
 [tool.pdm.build]
 includes = [
@@ -51,5 +45,10 @@ excludes = [
 
 [tool.pdm.dev-dependencies]
 dev = [
-    "django-extensions>=3.2.3",
+    "django-extensions>=3.2",
+    "black~=23.3",
+    "isort~=5.12.0",
+    "pre-commit~=3.6.0",
+    "django-debug-toolbar~=4.2.0",
+
 ]

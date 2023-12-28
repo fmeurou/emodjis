@@ -2,7 +2,8 @@
 {% load django_bootstrap5 %}
 {% load unicorn %}
 
-{% block title %}<a class="nav-link" href="{% url 'emojis:index' %}">{{ title }}</a>{% endblock %}
+{% block title %}{{ title }}{% endblock %}
+{% block content_title %}<a href="/" class="tracking-wide text-white text-center"><b>{{ title }}</b></a>{% endblock %}
 
 {% block content %}
     {% csrf_token %}

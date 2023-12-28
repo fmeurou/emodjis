@@ -19,14 +19,20 @@ class EmojiGridView(UnicornView):
     def load_emojis(self, search="", page=1):
         self.name_search = search
         if search:
-            emodjis = Emoji.objects.filter(name__icontains=search)
+            emodjis = Emoji.objects.filter(name__icontains=search).order_by(
+                "name"
+            )
         else:
-            emodjis = Emoji.objects.filter(name__icontains=self.name_search)
+            emodjis = Emoji.objects.filter(
+                name__icontains=self.name_search
+            ).order_by("name")
         p = Paginator(emodjis, PAGE_SIZE)
         self.page_range = list(p.page_range)
         self.page = page
         self.emodjis = EmojiSerializer(
-            p.page(page).object_list, many=True
+            p.page(page).object_list,
+            many=True,
+            context={"request": self.request},
         ).data
 
     def get_page_range(self):

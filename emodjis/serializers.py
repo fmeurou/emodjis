@@ -24,6 +24,7 @@ class EmojiFilterSerializer(serializers.ModelSerializer):
 
 class EmojiSerializer(serializers.ModelSerializer):
     b64image = serializers.SerializerMethodField()
+    url = serializers.SerializerMethodField()
 
     class Meta:
         model = Emoji
@@ -32,11 +33,25 @@ class EmojiSerializer(serializers.ModelSerializer):
     def get_b64image(self, obj):
         return base64.b64encode(obj.image).decode("utf-8")
 
+    def get_url(self, obj):
+        request = self.context.get("request")
+        if request:
+            host = request.META.get("HTTP_HOST")
+            return f"{request.scheme}://{host}/emoticon/{obj.name}"
+        else:
+            return f"emoticon/{obj.name}"
+
 
 class EmojiListSerializer(serializers.ModelSerializer):
+    url = serializers.SerializerMethodField()
+
     class Meta:
         model = Emoji
-        fields = ["name"]
+        fields = ["name", "url"]
+
+    def get_url(self, obj):
+        host = self.request.META.get("HTTP_HOST")
+        return f"{self.request.scheme}://{host}/emoticon/{obj.name}"
 
 
 class EmojiDestroySerializer(serializers.ModelSerializer):
