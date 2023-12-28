@@ -64,7 +64,6 @@ INSTALLED_APPS = [
     "corsheaders",
     "django_bootstrap5",
     "django_unicorn",
-    "tailwind",
     "emodjis",
 ]
 
