@@ -2,6 +2,7 @@ import base64
 
 from rest_framework.test import APIClient
 from django.test import TestCase
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.contrib.auth.models import User, Group
 
 from emodjis.models import Emoji
@@ -85,10 +86,14 @@ class TestEmoticonAPI(TestCase):
         client.credentials(
             HTTP_AUTHORIZATION="Basic " + basic_auth.decode("utf-8")
         )
-        response = client.post(
-            emoticon_detail_url.format(name=name),
-            files={"image": open(test_image, "rb")},
-        )
+        with open(test_image, "rb") as f:
+            image = SimpleUploadedFile(
+                f.name, f.read(), content_type="image/gif"
+            )
+            response = client.post(
+                emoticon_detail_url.format(name=name),
+                data={"image": image},
+            )
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.headers["Content-Type"], "application/json")
         self.assertIsNotNone(response.json())
