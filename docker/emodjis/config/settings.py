@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     "django_filters",
     "drf_spectacular",
     "corsheaders",
-    "django_bootstrap5",
+    "dddddjango_bootstrap5",
     "django_unicorn",
     "emodjis",
 ]

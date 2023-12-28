@@ -1,5 +1,6 @@
 """Emoticons serializer."""
 import base64
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from .models import Emoji
 from rest_framework import serializers
@@ -34,6 +35,8 @@ class EmojiSerializer(serializers.ModelSerializer):
         return base64.b64encode(obj.image).decode("utf-8")
 
     def get_url(self, obj):
+        if server_url := getattr(settings, "SERVER_URL", None):
+            return f"{server_url}/emoticon/{obj.name}"
         request = self.context.get("request")
         if request:
             host = request.META.get("HTTP_HOST")
@@ -50,8 +53,14 @@ class EmojiListSerializer(serializers.ModelSerializer):
         fields = ["name", "url"]
 
     def get_url(self, obj):
-        host = self.request.META.get("HTTP_HOST")
-        return f"{self.request.scheme}://{host}/emoticon/{obj.name}"
+        if server_url := getattr(settings, "SERVER_URL", None):
+            return f"{server_url}/emoticon/{obj.name}"
+        request = self.context.get("request")
+        if request:
+            host = request.META.get("HTTP_HOST")
+            return f"{request.scheme}://{host}/emoticon/{obj.name}"
+        else:
+            return f"emoticon/{obj.name}"
 
 
 class EmojiDestroySerializer(serializers.ModelSerializer):

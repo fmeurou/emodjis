@@ -39,7 +39,6 @@ urlpatterns = [
     ),
     path("", include(emojis_urls)),
     path("unicorn/", include("django_unicorn.urls")),
-    path("__debug__/", include("debug_toolbar.urls")),
 ]
 
 if settings.DEBUG:
